@@ -27,7 +27,8 @@
         "oneup/flysystem-bundle": "^1.13",
         "liip/imagine-bundle": "^1.7",
         "friendsofsymfony/elastica-bundle": "^4.0",
-        "ext-zlib": "*"
+        "ext-zlib": "*",
+        "ext-soap": "*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
