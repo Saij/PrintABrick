@@ -26,7 +26,8 @@
         "knplabs/knp-paginator-bundle": "^2.5",
         "oneup/flysystem-bundle": "^1.13",
         "liip/imagine-bundle": "^1.7",
-        "friendsofsymfony/elastica-bundle": "^4.0"
+        "friendsofsymfony/elastica-bundle": "^4.0",
+        "ext-zlib": "*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

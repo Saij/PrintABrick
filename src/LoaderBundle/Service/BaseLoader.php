@@ -5,6 +5,7 @@ namespace LoaderBundle\Service;
 use AppBundle\Transformer\FormatTransformer;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use LoaderBundle\Exception\UrlNotFoundException;
 use LoaderBundle\Exception\WriteErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -100,13 +101,14 @@ abstract class BaseLoader
     /**
      * Download file from $url, save it to system temp directory and return filepath.
      *
-     * @param $url
-     *
-     * @throws WriteErrorException
+     * @param string $url
+     * @param bool $unzip
      *
      * @return bool|string
+     * @throws WriteErrorException
+     * @throws UrlNotFoundException
      */
-    protected function downloadFile($url)
+    protected function downloadFile(string $url, $unzip = false)
     {
         $this->writeOutput(['Loading file from: <comment>'.$url.'</comment>']);
         $temp = tempnam(sys_get_temp_dir(), 'printabrick.');
@@ -115,7 +117,16 @@ abstract class BaseLoader
             'notification' => [$this, 'progressCallback'],
         ]);
 
-        if (false === file_put_contents($temp, fopen($url, 'r', 0, $ctx))) {
+        $data = file_get_contents($url, false, $ctx);
+        if ($data === false) {
+            throw new UrlNotFoundException($url);
+        }
+
+        if ($unzip) {
+            $data = gzinflate(substr($data,10,-8));
+        }
+
+        if (false === file_put_contents($temp, $data)) {
             throw new WriteErrorException($temp);
         }
 

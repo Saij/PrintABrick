@@ -57,7 +57,11 @@ class RebrickableLoader extends BaseLoader
             $this->loadPartTable($this->csvFile['parts']);
             $this->loadThemeTable($this->csvFile['themes']);
             $this->loadSetTable($this->csvFile['sets']);
+
+            $connection->prepare('SET foreign_key_checks = 0;')->execute();
             $this->loadInventoryTable($this->csvFile['inventories']);
+            $connection->prepare('SET foreign_key_checks = 1;')->execute();
+
             $this->loadInventorySetTable($this->csvFile['inventory_sets']);
 
             $connection->prepare('SET foreign_key_checks = 0;')->execute();
@@ -90,7 +94,7 @@ class RebrickableLoader extends BaseLoader
         ]);
 
         foreach ($array as $item) {
-            $this->csvFile[$item] = $this->downloadFile($this->rebrickable_url.$item.'.csv');
+            $this->csvFile[$item] = $this->downloadFile($this->rebrickable_url.$item.'.csv.gz', true);
         }
 
         $this->writeOutput(['<info>All CSV files loaded.</info>']);
